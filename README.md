@@ -4,18 +4,21 @@
 
 画像式アクセスカウンター（PHP）です。
 
+![サンプル](image.png)
+
 ## 必要な環境
 
 たぶんPHP8.1以上、GD関数
 
 ## 使い方
 
+gounterフォルダをサーバーにアップロードし、
 カウンターを表示したいところで、表示したい種類のPHPファイルを画像として読み込みます。
 
 ```html
-total<img src="count.php"> <!-- 累計カウンター -->
-today<img src="today.php"> <!-- 今日の分 -->
-yesterday<img src="yesterday.php"> <!-- 昨日の分 -->
+total<img src="gounter/count.php"> <!-- 累計カウンター -->
+today<img src="gounter/today.php"> <!-- 今日の分 -->
+yesterday<img src="gounter/yesterday.php"> <!-- 昨日の分 -->
 ```
 
 `count.php`のみアクセス数の加算が行われます。
