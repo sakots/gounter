@@ -9,13 +9,17 @@ const MINIMUM_DIGITS = 6; // カウントの桁数の最小値
 const IMAGE_DIRECTORY = 'iamge'; // 数字画像を保存したディレクトリ
 
 try {
-  $pdo = init();
-  $counts = countAccess($pdo);
-
-  $mode = filter_input_data('POST', 'mode');
-  $mode = is_string($mode) && $mode !== ''
-    ? $mode
+  $requestedMode = filter_input_data('POST', 'mode');
+  $requestedMode = is_string($requestedMode) && $requestedMode !== ''
+    ? $requestedMode
     : filter_input_data('GET', 'mode');
+  $mode = match ($requestedMode) {
+    'today', 'yesterday' => $requestedMode,
+    default => 'total',
+  };
+
+  $pdo = init();
+  $counts = updateCounters($pdo, $mode === 'total');
 
   $value = match ($mode) {
     'today' => $counts['today'],
@@ -103,11 +107,12 @@ function migrateDatabase(PDO $pdo): void
 }
 
 /**
- * 日付を更新し、直前と異なる接続元からのアクセスだけを加算する。
+ * 日付を更新し、必要な場合だけアクセス数を加算する。
+ * 累計表示は直前と異なる接続元だけを加算し、今日・昨日表示は加算しない。
  *
  * @return array{total: int, today: int, yesterday: int}
  */
-function countAccess(PDO $pdo): array
+function updateCounters(PDO $pdo, bool $increment): array
 {
   $transactionStarted = false;
 
@@ -140,7 +145,7 @@ function countAccess(PDO $pdo): array
     }
 
     $host = getClientHost();
-    if ($host === '' || !hash_equals($lastHost, $host)) {
+    if ($increment && ($host === '' || !hash_equals($lastHost, $host))) {
       ++$total;
       ++$today;
       $lastHost = $host;
