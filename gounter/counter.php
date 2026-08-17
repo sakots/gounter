@@ -5,6 +5,9 @@ declare(strict_types=1);
 
 // 設定
 const FILE_NAME = 'count.db'; // カウントを保存するデータベース名
+const DATABASE_DIRECTORY = 'data'; // データベースを保存するディレクトリ名
+const DATABASE_DIRECTORY_PERMISSIONS = 0700; // Unix系のディレクトリ権限
+const DATABASE_FILE_PERMISSIONS = 0600; // Unix系のデータベースファイル権限
 const TOTAL_MINIMUM_DIGITS = 6; // 累計カウントの桁数の最小値
 const DAILY_MINIMUM_DIGITS = 3; // 今日・昨日カウントの桁数の最小値
 const CUSTOM_MAXIMUM_DIGITS = 16; // 指定できる数字の最大桁数
@@ -83,7 +86,9 @@ function outputNumber(string $number): void
  * データベースを初期化して接続を返す。
  */
 function init(): PDO {
-  $pdo = new PDO('sqlite:' . __DIR__ . DIRECTORY_SEPARATOR . FILE_NAME);
+  $databasePath = prepareDatabasePath();
+  $pdo = new PDO('sqlite:' . $databasePath);
+  applyUnixPermissions($databasePath, DATABASE_FILE_PERMISSIONS);
   $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
   $pdo->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
   $pdo->exec('PRAGMA busy_timeout = 5000');
@@ -121,6 +126,50 @@ function init(): PDO {
   }
 
   return $pdo;
+}
+
+/**
+ * データベース保存ディレクトリを用意して保存先を返す。
+ */
+function prepareDatabasePath(): string
+{
+  $databaseDirectory = __DIR__ . DIRECTORY_SEPARATOR . DATABASE_DIRECTORY;
+
+  if (!is_dir($databaseDirectory)) {
+    if (!@mkdir($databaseDirectory, DATABASE_DIRECTORY_PERMISSIONS, true)
+      && !is_dir($databaseDirectory)) {
+      throw new RuntimeException('Failed to create the database directory.');
+    }
+  }
+
+  applyUnixPermissions($databaseDirectory, DATABASE_DIRECTORY_PERMISSIONS);
+
+  if (!is_writable($databaseDirectory)) {
+    throw new RuntimeException('The database directory is not writable.');
+  }
+
+  $databasePath = $databaseDirectory . DIRECTORY_SEPARATOR . FILE_NAME;
+
+  if (is_file($databasePath)) {
+    applyUnixPermissions($databasePath, DATABASE_FILE_PERMISSIONS);
+  }
+
+  return $databasePath;
+}
+
+/**
+ * Unix系環境だけファイルモードを設定する。
+ * WindowsではchmodがNTFS ACLを設定できないため、web.configでHTTPアクセスを防ぐ。
+ */
+function applyUnixPermissions(string $path, int $permissions): void
+{
+  if (PHP_OS_FAMILY === 'Windows') {
+    return;
+  }
+
+  if (!@chmod($path, $permissions)) {
+    throw new RuntimeException('Failed to set secure filesystem permissions.');
+  }
 }
 
 /**
