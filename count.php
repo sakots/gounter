@@ -6,7 +6,7 @@ declare(strict_types=1);
 // 設定
 const FILE_NAME = 'count.db'; // カウントを保存するデータベース名
 const MINIMUM_DIGITS = 6; // カウントの桁数の最小値
-const IMAGE_DIRECTORY = 'iamge'; // 数字画像を保存したディレクトリ
+const IMAGE_DIRECTORY = 'images'; // 数字画像を保存したディレクトリ
 
 try {
   $requestedMode = filter_input_data('POST', 'mode');
