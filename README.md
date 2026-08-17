@@ -51,6 +51,12 @@ const CUSTOM_MAXIMUM_DIGITS = 12; // 指定数字の最大桁数
 
 URLに書いた数字の文字数が、そのまま表示桁数になります。6桁で表示する場合は、`000123`のように先頭へゼロを付けて指定します。
 
+## DBファイルの保護
+
+`gounter/.htaccess`で、SQLite（Structured Query Language Database）のDBファイルと一時ファイルへのアクセスを拒否しています。
+
+この設定はApache HTTP Server 2.4用です。PHP内蔵サーバー（`php -S`）やNginxでは`.htaccess`が使われないため、公開環境のサーバー設定で同様に保護してください。
+
 ## 素材
 
 いらすとやのものを使用しました。
