@@ -7,6 +7,7 @@ declare(strict_types=1);
 const FILE_NAME = 'count.db'; // カウントを保存するデータベース名
 const TOTAL_MINIMUM_DIGITS = 6; // 累計カウントの桁数の最小値
 const DAILY_MINIMUM_DIGITS = 3; // 今日・昨日カウントの桁数の最小値
+const CUSTOM_MAXIMUM_DIGITS = 16; // 指定できる数字の最大桁数
 const IMAGE_DIRECTORY = 'images'; // 数字画像を保存したディレクトリ
 
 /**
@@ -44,6 +45,37 @@ function outputCounter(string $period): void
     }
 
     echo 'Failed to create the access counter image.';
+  }
+}
+
+/**
+ * URLで指定された数字をカウンター画像として出力する。
+ */
+function outputNumber(string $number): void
+{
+  if (!preg_match('/\A[0-9]+\z/D', $number) || strlen($number) > CUSTOM_MAXIMUM_DIGITS) {
+    if (!headers_sent()) {
+      http_response_code(400);
+      header('Content-Type: text/plain; charset=UTF-8');
+      header('Cache-Control: no-store');
+    }
+
+    echo 'Specify a number with 1 to ' . CUSTOM_MAXIMUM_DIGITS . ' digits.';
+    return;
+  }
+
+  try {
+    outputCounterImage($number, strlen($number));
+  } catch (Throwable $exception) {
+    error_log('counter: ' . $exception->getMessage());
+
+    if (!headers_sent()) {
+      http_response_code(500);
+      header('Content-Type: text/plain; charset=UTF-8');
+      header('Cache-Control: no-store');
+    }
+
+    echo 'Failed to create the number image.';
   }
 }
 
@@ -203,9 +235,14 @@ function getClientHost(): string
 /**
  * カウントを数字画像として連結して出力する。
  */
-function outputCounterImage(int $count, int $minimumDigits): void
+function outputCounterImage(int|string $count, int $minimumDigits): void
 {
-  $digits = str_pad((string) max(0, $count), $minimumDigits, '0', STR_PAD_LEFT);
+  $number = is_int($count) ? (string) max(0, $count) : $count;
+  if (!preg_match('/\A[0-9]+\z/D', $number) || $minimumDigits < 1) {
+    throw new InvalidArgumentException('The count and minimum digits must be positive numbers.');
+  }
+
+  $digits = str_pad($number, $minimumDigits, '0', STR_PAD_LEFT);
   $images = [];
   $width = 0;
   $height = 0;
