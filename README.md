@@ -27,6 +27,7 @@ number<img src="gounter/number.php/123456"> <!-- 指定した数字 -->
 共通のルーチンとして、`counter.php`も同じディレクトリに必要です。
 
 画像のサイズ変更、枠の装飾等はcssで行ってください。
+サンプルを[tests/test.css](tests/test.css)に置いています。
 
 ## 桁数の設定
 
