@@ -10,11 +10,7 @@
 
 ## 使い方
 
-```html
-<img src="count.php">
-```
-
-のように、`count.php`を画像をして読み込みます。
+カウンターを表示したいところで`count.php`を画像をして読み込みます。
 
 ```html
 <img src="count.php"> <!-- 累計カウンター -->
