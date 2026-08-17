@@ -53,9 +53,15 @@ URLに書いた数字の文字数が、そのまま表示桁数になります�
 
 ## DBファイルの保護
 
-`gounter/.htaccess`で、SQLite（Structured Query Language Database）のDBファイルと一時ファイルへのアクセスを拒否しています。
+DB（Database／データベース）は`gounter/data/count.db`に保存されます。
 
-この設定はApache HTTP Server 2.4用です。PHP内蔵サーバー（`php -S`）やNginxでは`.htaccess`が使われないため、公開環境のサーバー設定で同様に保護してください。
+Unix系環境では、PHPが保存ディレクトリを`0700`、DBファイルを`0600`に設定します。
+
+Apache HTTP Server 2.4では`gounter/data/.htaccess`、Windows ServerのIIS（Internet Information Services）では`gounter/web.config`を使い、`data`ディレクトリ全体へのHTTPアクセスを拒否します。
+
+Windowsの`chmod()`ではNTFS（New Technology File System）のACL（Access Control List）を設定できません。公開時はIISのアプリケーションプールIDだけに`data`ディレクトリの変更権限を与えてください。
+
+PHP内蔵サーバー（`php -S`）やNginxでは`.htaccess`と`web.config`が使われないため、公開環境のサーバー設定で`data`ディレクトリを別途保護してください。
 
 ## 素材
 
