@@ -1,8 +1,26 @@
-# gounter
+# がうんたー
 
 ## 何
 
 画像式アクセスカウンター（PHP）です。
+
+## 必要な環境
+
+たぶんPHP8.1以上、GD関数
+
+## 使い方
+
+```html
+<img src="count.php">
+```
+
+のように、`count.php`を画像をして読み込みます。
+
+```html
+<img src="count.php"> <!-- 累計カウンター -->
+<img src="count.php?mode=today"> <!-- 今日の分 -->
+<img src="count.php?mode=yesterday"> <!-- 昨日の分 -->
+```
 
 ## 素材
 
