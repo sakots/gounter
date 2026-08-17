@@ -10,15 +10,28 @@
 
 ## 使い方
 
-カウンターを表示したいところで`count.php`を画像をして読み込みます。
+カウンターを表示したいところで、表示したい種類のPHPファイルを画像として読み込みます。
 
 ```html
-<img src="count.php"> <!-- 累計カウンター -->
-<img src="count.php?mode=today"> <!-- 今日の分 -->
-<img src="count.php?mode=yesterday"> <!-- 昨日の分 -->
+total<img src="count.php"> <!-- 累計カウンター -->
+today<img src="today.php"> <!-- 今日の分 -->
+yesterday<img src="yesterday.php"> <!-- 昨日の分 -->
 ```
 
-累計表示のみアクセス数の加算が行われます。
+`count.php`のみアクセス数の加算が行われます。
+
+共通のルーチンとして、`counter.php`も同じディレクトリに必要です。
+
+画像のサイズ変更、枠の装飾等はcssで行ってください。
+
+## 桁数の設定
+
+`counter.php`の定数で、累計と今日・昨日の最小桁数を個別に設定できます。
+
+```php
+const TOTAL_MINIMUM_DIGITS = 6; // 累計
+const DAILY_MINIMUM_DIGITS = 3; // 今日・昨日
+```
 
 ## 素材
 
@@ -26,6 +39,10 @@
 アクセスカウンターはプロクラムなので「素材が主体」ではないと供述している。
 
 ## 更新履歴
+
+### [2026/08/18] v0.1.0
+
+- アプリのトラッキング防止対策としてURLクエリなしに変更
 
 ### [2026/08/17]
 
