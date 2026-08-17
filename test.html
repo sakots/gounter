@@ -4,10 +4,21 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>カウンターのテスト用html</title>
+  <link rel="stylesheet" href="test.css">
 </head>
 <body>
-  <div>total<img src="count.php"></div> <!-- 累計カウンター -->
-  <div>today<img src="today.php"></div> <!-- 今日の分 -->
-  <div>yesterday<img src="yesterday.php"></div> <!-- 昨日の分 -->
+  <main>
+    <div class="counter-list">
+      total<span class="counter-frame">
+        <img class="counter-image" src="gounter/count.php" alt="累計アクセス数">
+      </span>
+      today<span class="counter-frame">
+        <img class="counter-image" src="gounter/today.php" alt="今日のアクセス数">
+      </span>
+      yesterday<span class="counter-frame">
+        <img class="counter-image" src="gounter/yesterday.php" alt="今日のアクセス数">
+      </span>
+    </div>
+  </main>
 </body>
 </html>
