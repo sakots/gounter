@@ -19,6 +19,7 @@ gounterフォルダをサーバーにアップロードし、
 total<img src="gounter/count.php"> <!-- 累計カウンター -->
 today<img src="gounter/today.php"> <!-- 今日の分 -->
 yesterday<img src="gounter/yesterday.php"> <!-- 昨日の分 -->
+number<img src="gounter/number.php/123456"> <!-- 指定した数字 -->
 ```
 
 `count.php`のみアクセス数の加算が行われます。
@@ -34,7 +35,20 @@ yesterday<img src="gounter/yesterday.php"> <!-- 昨日の分 -->
 ```php
 const TOTAL_MINIMUM_DIGITS = 6; // 累計
 const DAILY_MINIMUM_DIGITS = 3; // 今日・昨日
+const CUSTOM_MAXIMUM_DIGITS = 12; // 指定数字の最大桁数
 ```
+
+## おまけ機能 任意の数字を表示
+
+`number.php`の後ろに数字を付けると、DB（Database／データベース）を更新せずにその数字を画像として表示します。
+
+```html
+<img src="gounter/number.php/123456">
+```
+
+![おまけサンプル](image-1.png)
+
+URLに書いた数字の文字数が、そのまま表示桁数になります。6桁で表示する場合は、`000123`のように先頭へゼロを付けて指定します。
 
 ## 素材
 
@@ -55,6 +69,7 @@ const IMAGE_DIRECTORY = 'images'; // 数字画像を保存したディレクト�
 ### [2026/08/18] v0.1.0
 
 - アプリのトラッキング防止対策としてURLクエリなしに変更
+- おまけ機能追加
 
 ### [2026/08/17]
 
